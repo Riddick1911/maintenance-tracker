@@ -197,8 +197,9 @@
         <div><div class="vc-name">Skoda Octavia Tour · 2005</div><div class="vc-sub">1.6 бензин/газ · двигун BFQ</div></div>
         <span class="status-badge" id="car-badge">—</span>
       </div>
-      <div class="stat-row">
+      <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr">
         <div class="stat-box"><div class="stat-label">Пробіг зараз</div><div class="stat-val" id="car-km-display">—</div><div class="stat-unit">км</div></div>
+        <div class="stat-box"><div class="stat-label">Замінено при</div><div class="stat-val" id="car-oil-km-display">—</div><div class="stat-unit">км</div></div>
         <div class="stat-box"><div class="stat-label">До заміни масла</div><div class="stat-val" id="car-km-left">—</div><div class="stat-unit">км</div></div>
       </div>
       <div class="interval-row">
@@ -212,8 +213,12 @@
         <div class="progress-track"><div class="progress-fill fill-ok" id="car-prog-bar" style="width:0%"></div></div>
       </div>
       <div class="vc-update">
-        <input class="inp-km" id="car-km-input" type="number" inputmode="numeric" placeholder="Введи пробіг (км)">
+        <input class="inp-km" id="car-km-input" type="number" inputmode="numeric" placeholder="Поточний пробіг (км)">
         <button class="btn-upd" onclick="updateCarKm()">Оновити</button>
+      </div>
+      <div class="vc-update" style="margin-top:6px">
+        <input class="inp-km" id="car-oil-km-input" type="number" inputmode="numeric" placeholder="Пробіг при заміні масла (км)" style="font-size:12px">
+        <button class="btn-upd" onclick="updateOilKm()" style="background:var(--bg-success);color:var(--text-success);border:0.5px solid var(--text-success);font-size:12px">Задати</button>
       </div>
     </div>
     <div class="section-label">Садова техніка · Dnipro-M</div>
@@ -366,9 +371,10 @@ function renderCar(){
   const{km,lastOilKm,oilInterval}=state.car;
   [7000,8000,10000].forEach(v=>{const b=document.getElementById('ibtn-'+v/1000);if(b)b.classList.toggle('active',oilInterval===v);});
   document.getElementById('car-prog-label').textContent=`Масло · кожні ${oilInterval.toLocaleString('uk-UA')} км`;
-  const dsp=document.getElementById('car-km-display'),lft=document.getElementById('car-km-left'),bdg=document.getElementById('car-badge'),bar=document.getElementById('car-prog-bar'),pct=document.getElementById('car-prog-pct');
-  if(km===null){dsp.textContent='—';lft.textContent='—';bdg.textContent='Введи пробіг';bdg.className='status-badge neutral';return;}
+  const dsp=document.getElementById('car-km-display'),lft=document.getElementById('car-km-left'),bdg=document.getElementById('car-badge'),bar=document.getElementById('car-prog-bar'),pct=document.getElementById('car-prog-pct'),oilDsp=document.getElementById('car-oil-km-display');
+  if(km===null){dsp.textContent='—';lft.textContent='—';if(oilDsp)oilDsp.textContent='—';bdg.textContent='Введи пробіг';bdg.className='status-badge neutral';return;}
   dsp.textContent=km.toLocaleString('uk-UA');
+  if(oilDsp)oilDsp.textContent=lastOilKm?lastOilKm.toLocaleString('uk-UA'):'—';
   if(lastOilKm===null){lft.textContent='?';bdg.textContent='Введи дані ТО';bdg.className='status-badge warn';return;}
   const used=km-lastOilKm,left=oilInterval-used,p=Math.min(100,Math.round(used/oilInterval*100));
   lft.textContent=Math.max(0,left).toLocaleString('uk-UA');pct.textContent=p+'%';
@@ -379,6 +385,8 @@ function renderCar(){
 }
 function updateCarKm(){const val=parseInt(document.getElementById('car-km-input').value);if(!val||val<0)return;const old=state.car.km;state.car.km=val;if(state.car.lastOilKm===null)state.car.lastOilKm=val;document.getElementById('car-km-input').value='';addHistory(`Пробіг: ${old?old.toLocaleString()+' → ':''}${val.toLocaleString()} км`);renderCar();}
 
+function updateOilKm(){const val=parseInt(document.getElementById('car-oil-km-input').value);if(!val||val<0)return;if(state.car.km&&val>state.car.km){const s=document.getElementById('car-oil-km-input');s.style.borderColor='var(--text-danger)';setTimeout(()=>{s.style.borderColor='';},1500);return;}const old=state.car.lastOilKm;state.car.lastOilKm=val;document.getElementById('car-oil-km-input').value='';addHistory(`Пробіг при заміні масла: ${old?old.toLocaleString()+' → ':''}${val.toLocaleString()} км`);renderCar();}
+
 // ---- TOOLS ----
 function renderTools(){
   const grid=document.getElementById('tools-grid');
@@ -387,11 +395,50 @@ function renderTools(){
     let bcls,btext,fcls;
     if(p>=100){bcls='due';btext='Міняй масло!';fcls='fill-due';}else if(p>=75){bcls='warn';btext='Скоро ТО';fcls='fill-warn';}else{bcls='ok';btext='OK';fcls='fill-ok';}
     const fuelColor=def.engineType==='4t'?'color:var(--text-success)':'color:var(--text-warning)';
-    return`<div class="tool-card"><div class="tool-header"><div><div class="tool-name">${def.icon} ${def.name}</div><div class="tool-model">${def.brand} ${def.model} · ${def.info}</div><div class="tool-model" style="margin-top:3px;${fuelColor}">${def.fuelMix}</div></div><span class="status-badge ${bcls}">${btext}</span></div><div class="tool-stats"><div class="tool-stat"><div class="stat-label">Всього мотогодин</div><div class="stat-val">${t.motoHours.toFixed(1)} <span class="stat-unit">год</span></div></div><div class="tool-stat"><div class="stat-label">З останньої заміни</div><div class="stat-val">${since.toFixed(1)} <span class="stat-unit">/ ${def.oilEveryHours}г</span></div></div></div><div class="progress-row" style="margin-bottom:8px"><div class="progress-track"><div class="progress-fill ${fcls}" style="width:${p}%"></div></div></div><div class="tool-actions"><button class="btn-sm" onclick="openAddHours('${def.id}','${def.name}')">+ Години</button><button class="btn-oil" onclick="markOilDone('${def.id}','${def.name}')">✓ Масло замінив</button></div></div>`;
+    return`<div class="tool-card">
+      <div class="tool-header">
+        <div>
+          <div class="tool-name">${def.icon} ${def.name}</div>
+          <div class="tool-model">${def.brand} ${def.model} · ${def.info}</div>
+          <div class="tool-model" style="margin-top:3px;${fuelColor}">${def.fuelMix}</div>
+        </div>
+        <span class="status-badge ${bcls}">${btext}</span>
+      </div>
+      <div class="tool-stats" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="tool-stat"><div class="stat-label">Всього годин</div><div class="stat-val">${t.motoHours.toFixed(1)} <span class="stat-unit">год</span></div></div>
+        <div class="tool-stat"><div class="stat-label">Замінено при</div><div class="stat-val">${t.lastOilHours.toFixed(1)} <span class="stat-unit">год</span></div></div>
+        <div class="tool-stat"><div class="stat-label">До заміни</div><div class="stat-val">${Math.max(0,def.oilEveryHours-since).toFixed(1)} <span class="stat-unit">год</span></div></div>
+      </div>
+      <div class="progress-row" style="margin-bottom:8px">
+        <div class="progress-label"><span style="font-size:10px;color:var(--text-muted)">Масло · кожні ${def.oilEveryHours}г</span><span style="font-size:10px;color:var(--text-secondary)">${p}%</span></div>
+        <div class="progress-track"><div class="progress-fill ${fcls}" style="width:${p}%"></div></div>
+      </div>
+      <div class="tool-actions" style="flex-wrap:wrap;gap:6px">
+        <button class="btn-sm" onclick="openAddHours('${def.id}','${def.name}')">+ Години</button>
+        <button class="btn-oil" onclick="markOilDone('${def.id}','${def.name}')">✓ Масло замінив</button>
+      </div>
+      <div class="vc-update" style="margin-top:8px">
+        <input class="inp-km" id="tool-oil-inp-${def.id}" type="number" inputmode="decimal" step="0.5" placeholder="Годин при заміні масла" style="font-size:12px">
+        <button class="btn-upd" onclick="setToolOilHours('${def.id}','${def.name}')" style="background:var(--bg-success);color:var(--text-success);border:0.5px solid var(--text-success);font-size:12px">Задати</button>
+      </div>
+    </div>`;
   }).join('');
 }
 function openAddHours(toolId,toolName){const t=state.tools[toolId];document.getElementById('modal-title').textContent=`+ Години: ${toolName}`;document.getElementById('modal-note').textContent=`Зараз: ${t.motoHours.toFixed(1)} год`;document.getElementById('modal-input').value='';document.getElementById('modal').style.display='flex';modalCallback=(val)=>{t.motoHours=parseFloat((t.motoHours+val).toFixed(1));addHistory(`${toolName}: +${val}г → ${t.motoHours.toFixed(1)}г`);save();renderTools();};setTimeout(()=>document.getElementById('modal-input').focus(),100);}
 function markOilDone(toolId,toolName){const t=state.tools[toolId];t.lastOilHours=t.motoHours;addHistory(`${toolName}: масло при ${t.motoHours.toFixed(1)}г`);save();renderTools();}
+
+function setToolOilHours(toolId,toolName){
+  const inp=document.getElementById(`tool-oil-inp-${toolId}`);
+  const val=parseFloat(inp.value);
+  if(isNaN(val)||val<0){inp.style.borderColor='var(--text-danger)';setTimeout(()=>{inp.style.borderColor='';},1500);return;}
+  const t=state.tools[toolId];
+  if(val>t.motoHours){inp.style.borderColor='var(--text-danger)';setTimeout(()=>{inp.style.borderColor='';},1500);return;}
+  const old=t.lastOilHours;
+  t.lastOilHours=val;
+  inp.value='';
+  addHistory(`${toolName}: точка заміни масла: ${old.toFixed(1)}г → ${val.toFixed(1)}г`);
+  save();renderTools();
+}
 function confirmModal(){const val=parseFloat(document.getElementById('modal-input').value);if(!val||val<0)return;if(modalCallback)modalCallback(val);closeModalDirect();}
 function closeModal(e){if(e.target===document.getElementById('modal'))closeModalDirect();}
 function closeModalDirect(){document.getElementById('modal').style.display='none';modalCallback=null;}
