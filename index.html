@@ -39,11 +39,24 @@
   body { font-family: var(--font-sans); background: var(--bg); color: var(--text-primary); min-height: 100dvh; max-width: 480px; margin: 0 auto; }
 
   .app { display: flex; flex-direction: column; min-height: 100dvh; }
-  .app-header { padding: 14px 16px 10px; background: var(--surface-1); border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
+  .app-header { padding: 12px 16px; background: var(--surface-1); border-bottom: 0.5px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
   .app-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
   .app-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
 
-  .tabs { display: flex; border-bottom: 0.5px solid var(--border); background: var(--surface-1); flex-shrink: 0; overflow-x: auto; }
+  /* Header menu button */
+  .menu-btn { width: 34px; height: 34px; border-radius: var(--radius); border: 0.5px solid var(--border-strong); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text-secondary); flex-shrink: 0; }
+  .menu-btn:hover { background: var(--surface-2); }
+
+  /* Dropdown menu */
+  .dropdown-overlay { position: fixed; inset: 0; z-index: 50; display: none; }
+  .dropdown-overlay.open { display: block; }
+  .dropdown-menu { position: absolute; top: 58px; right: 14px; background: var(--surface-2); border: 0.5px solid var(--border-strong); border-radius: 12px; padding: 6px; min-width: 180px; z-index: 51; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+  .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius); cursor: pointer; font-size: 14px; color: var(--text-secondary); border: none; background: none; width: 100%; text-align: left; font-family: var(--font-sans); }
+  .dropdown-item:hover { background: var(--surface-1); color: var(--text-primary); }
+  .dropdown-item.active { color: var(--text-accent); background: var(--bg-accent); }
+  .dropdown-divider { height: 0.5px; background: var(--border); margin: 4px 0; }
+
+  .tabs { display: flex; border-bottom: 0.5px solid var(--border); background: var(--surface-1); flex-shrink: 0; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab { flex: 1; padding: 10px 4px; font-size: 11px; color: var(--text-secondary); cursor: pointer; text-align: center; border: none; background: none; border-bottom: 2px solid transparent; white-space: nowrap; min-width: 56px; font-family: var(--font-sans); }
   .tab.active { color: var(--text-accent); border-bottom-color: var(--fill-accent); font-weight: 500; }
@@ -141,6 +154,27 @@
   .diag-subtabs { display: flex; gap: 6px; flex-wrap: wrap; }
   .diag-stab { padding: 7px 13px; border-radius: 20px; font-size: 12px; font-family: var(--font-sans); cursor: pointer; border: 0.5px solid var(--border-strong); background: none; color: var(--text-secondary); white-space: nowrap; }
   .diag-stab.active { background: var(--bg-accent); color: var(--text-accent); border-color: var(--border-accent); font-weight: 500; }
+
+  .instr-section { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+  .instr-section-header { padding: 11px 14px; background: var(--surface-1); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .instr-section-header:hover { background: var(--surface-0); }
+  .instr-section-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .instr-body { padding: 14px; font-size: 13px; color: var(--text-secondary); line-height: 1.75; }
+  .instr-body h4 { font-size: 11px; font-weight: 600; color: var(--text-accent); text-transform: uppercase; letter-spacing: 0.6px; margin: 14px 0 8px; }
+  .instr-body h4:first-child { margin-top: 0; }
+  .instr-step { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .instr-num { background: var(--fill-accent); color: #fff; border-radius: 50%; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+  .instr-note { background: var(--bg-warning); border-left: 3px solid var(--text-warning); border-radius: 0 var(--radius) var(--radius) 0; padding: 8px 12px; font-size: 12px; color: var(--text-warning); margin: 8px 0; line-height: 1.5; }
+  .instr-tip { background: var(--bg-accent); border-left: 3px solid var(--text-accent); border-radius: 0 var(--radius) var(--radius) 0; padding: 8px 12px; font-size: 12px; color: var(--text-accent); margin: 8px 0; line-height: 1.5; }
+  .instr-ok { background: var(--bg-success); border-left: 3px solid var(--text-success); border-radius: 0 var(--radius) var(--radius) 0; padding: 8px 12px; font-size: 12px; color: var(--text-success); margin: 8px 0; line-height: 1.5; }
+  .checklist-card { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+  .checklist-title { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 10px; }
+  .checklist-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
+  .checklist-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .cl-cb { width: 22px; height: 22px; border: 0.5px solid var(--border-strong); border-radius: 6px; background: var(--surface-1); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.15s; }
+  .cl-cb.checked { background: var(--bg-success); border-color: var(--text-success); }
+  .cl-label { font-size: 13px; color: var(--text-secondary); flex: 1; line-height: 1.4; }
+  .cl-label.checked { color: var(--text-muted); text-decoration: line-through; }
   .diag-context-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 9px 12px; font-size: 12px; color: var(--text-secondary); }
   .diag-context-card strong { color: var(--text-primary); font-weight: 500; }
   .diag-msgs { display: flex; flex-direction: column; gap: 8px; min-height: 160px; flex: 1; }
@@ -176,17 +210,28 @@
 <body>
 <div class="app">
   <div class="app-header">
-    <div class="app-title">🔧 ТО Трекер</div>
-    <div class="app-sub">Skoda Octavia Tour · Dnipro-M техніка</div>
+    <div>
+      <div class="app-title">🔧 ТО Трекер</div>
+      <div class="app-sub">Skoda Octavia Tour · Dnipro-M техніка</div>
+    </div>
+    <button class="menu-btn" onclick="toggleMenu()" id="menu-btn" aria-label="Меню">⋯</button>
+  </div>
+
+  <!-- Dropdown -->
+  <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeMenu()">
+    <div class="dropdown-menu" onclick="event.stopPropagation()">
+      <button class="dropdown-item" id="dmenu-parts" onclick="switchTab('parts');closeMenu()">🛒 Запчастини</button>
+      <button class="dropdown-item" id="dmenu-instructions" onclick="switchTab('instructions');closeMenu()">📖 Інструкції</button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item" id="dmenu-settings" onclick="switchTab('settings');closeMenu()">⚙️ Бекап</button>
+    </div>
   </div>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('dash')">📊 Дашборд</button>
-    <button class="tab" onclick="switchTab('parts')">🛒 Запчастини</button>
     <button class="tab" onclick="switchTab('checkin')">💬 Check-in</button>
     <button class="tab" onclick="switchTab('diag')">🔍 Діагностика</button>
     <button class="tab" onclick="switchTab('history')">📋 Журнал</button>
-    <button class="tab" onclick="switchTab('settings')">⚙️ Бекап</button>
   </div>
 
   <!-- DASHBOARD -->
@@ -252,6 +297,20 @@
   </div>
 
   <!-- HISTORY -->
+  <!-- INSTRUCTIONS -->
+  <div id="tab-instructions" class="panel" style="gap:12px;padding-bottom:20px">
+    <div class="section-label">Інструкції по техніці</div>
+
+    <!-- Subtabs -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap" id="instr-subtabs">
+      <button class="diag-stab active" onclick="switchInstr('chainsaw')">⛓ Бензопила</button>
+      <button class="diag-stab" onclick="switchInstr('brushcutter')">🌿 Бензокоса</button>
+      <button class="diag-stab" onclick="switchInstr('cultivator')">🌱 Культиватор</button>
+    </div>
+
+    <div id="instr-content"></div>
+  </div>
+
   <div id="tab-history" class="panel">
     <div class="section-label">Журнал оновлень</div>
     <div id="history-list" style="display:flex;flex-direction:column;gap:6px"></div>
@@ -354,6 +413,8 @@ function loadData(){
   history=lsGet(HK)||[];
   partsCustom=lsGet(PK)||{};
   collapsed=lsGet(CK)||{};
+  instrCollapsed=lsGet('instr_collapsed_v1')||{};
+  checklistState=lsGet('checklist_v1')||{};
   if(!state.car.oilInterval)state.car.oilInterval=8000;
   render();
 }
@@ -504,6 +565,8 @@ function exportData(){
     history:history,
     partsCustom:partsCustom,
     collapsed:collapsed,
+    instrCollapsed:instrCollapsed,
+    checklistState:checklistState,
   };
   const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
@@ -534,11 +597,15 @@ function importData(event){
       history=backup.history||[];
       partsCustom=backup.partsCustom||{};
       collapsed=backup.collapsed||{};
+      instrCollapsed=backup.instrCollapsed||{};
+      checklistState=backup.checklistState||{};
       if(!state.car.oilInterval)state.car.oilInterval=8000;
       lsSet(SK,state);
       lsSet(HK,history);
       lsSet(PK,partsCustom);
       lsSet(CK,collapsed);
+      lsSet('instr_collapsed_v1',instrCollapsed);
+      lsSet('checklist_v1',checklistState);
       addHistory('Дані відновлено з бекапу');
       render();
       status.textContent='✓ Дані успішно відновлено!';
@@ -553,7 +620,342 @@ function importData(event){
   event.target.value='';
 }
 
-function switchTab(name){document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['dash','parts','checkin','diag','history','settings'][i]===name);});document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(`tab-${name}`).classList.add('active');if(name==='checkin')renderCheckin();if(name==='diag'){renderDiagCtx();renderDiagMsgs();}}
+// ---- INSTRUCTIONS ----
+const INSTRUCTIONS = {
+  chainsaw: {
+    name: '⛓ Бензопила Dnipro-M NSG-45H',
+    sections: [
+      {
+        id: 'cs-fuel', title: '⛽ Паливо та суміш', open: true,
+        content: `<h4>Тип палива</h4>
+        <div class="instr-note">⚠️ Чистий бензин не заливати! Двигун 2Т потребує суміші.</div>
+        <div class="instr-step"><div class="instr-num">1</div><div>Бензин: <strong>АИ-92</strong> (або АИ-95, але 92 достатньо)</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Масло 2Т: <strong>Husqvarna HP</strong> або <strong>Stihl HP</strong></div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Пропорція: <strong>1:50</strong> — 20мл масла на 1л бензину</div></div>
+        <div class="instr-tip">💡 Зручна таблиця: 0.5л бензину → 10мл масла · 1л → 20мл · 2л → 40мл</div>
+        <h4>Як готувати суміш</h4>
+        <div class="instr-step"><div class="instr-num">1</div><div>Відміряй потрібну кількість масла шприцом або мірною ємністю</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Залий масло в каністру, потім бензин</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Закрий і збовтай 15–20 секунд</div></div>
+        <div class="instr-note">⚠️ Готову суміш зберігати не більше 30 днів — потім втрачає властивості</div>`
+      },
+      {
+        id: 'cs-chain', title: '🔗 Мастило ланцюга', open: false,
+        content: `<h4>Бак мастила ланцюга</h4>
+        <div class="instr-tip">ℹ️ Окремий від паливного бак — зазвичай з позначкою 🔗 або олійничкою</div>
+        <div class="instr-step"><div class="instr-num">1</div><div>Заливати <strong>спеціальне мастило для ланцюга бензопили</strong> (chain oil / bar oil)</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Рекомендовані марки: Husqvarna Chain Oil, Stihl ForestPlus, Liqui Moly Chain Lube</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Перевіряй рівень <strong>перед кожним використанням</strong> — витрачається разом з паливом</div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div>Доливай коли рівень нижче половини</div></div>
+        <div class="instr-note">⚠️ Не використовувати відпрацьоване масло або відробітку — засмічує систему змащення</div>`
+      },
+      {
+        id: 'cs-to', title: '🔧 Технічне обслуговування', open: false,
+        content: `<h4>Самостійне ТО</h4>
+        <div class="instr-step"><div class="instr-num">1</div><div><strong>Кожні 10–15 годин</strong> — чистити повітряний фільтр (продути або промити)</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div><strong>Кожні 20–25 годин</strong> — перевірити натяг ланцюга, загострити або замінити</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div><strong>Кожні 25 годин</strong> — замінити масло в двигуні (якщо є окрема масляна система, у 2Т — масло в суміші)</div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div><strong>Кожні 50 годин</strong> — перевірити свічку запалення, при необхідності замінити</div></div>
+        <h4>Сервісний центр</h4>
+        <div class="instr-ok">✓ Везти в СЦ кожні <strong>100 мотогодин</strong> або раз на сезон — регулювання карбюратора, перевірка гальма ланцюга, зірочки</div>`
+      },
+      {
+        id: 'cs-winter', title: '❄️ Консервування на зиму', open: false,
+        content: `<div class="instr-note">⚠️ Важливо! Неправильне консервування — головна причина поломок навесні</div>
+        <div class="instr-step"><div class="instr-num">1</div><div>Повністю <strong>злий залишки суміші</strong> з бака</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Запусти двигун і дай попрацювати на холостих поки не зупиниться сам — карбюратор спорожніє</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Злий <strong>мастило ланцюга</strong> з бака (або залиш повний — думки розходяться, але краще злити)</div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div>Зніми і <strong>почисти ланцюг</strong> — промий у розчиннику, просуши, змасти</div></div>
+        <div class="instr-step"><div class="instr-num">5</div><div>Почисти <strong>повітряний фільтр</strong></div></div>
+        <div class="instr-step"><div class="instr-num">6</div><div>Зніми шину з ланцюгом, змасти шину і зірочку, зберігай окремо</div></div>
+        <div class="instr-step"><div class="instr-num">7</div><div>Зовнішні поверхні протри від бруду і пилу</div></div>
+        <div class="instr-step"><div class="instr-num">8</div><div>Зберігай у сухому місці при температурі вище -10°С</div></div>`
+      },
+      {
+        id: 'cs-spring', title: '🌱 Підготовка до сезону', open: false,
+        content: `<div class="instr-step"><div class="instr-num">1</div><div>Перевір зовнішній стан — тріщини, пошкодження</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Встанови шину з ланцюгом, перевір <strong>натяг ланцюга</strong></div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Перевір і при потребі замін <strong>свічку запалення</strong></div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div>Почисти або заміни <strong>повітряний фільтр</strong></div></div>
+        <div class="instr-step"><div class="instr-num">5</div><div>Долий <strong>мастило ланцюга</strong> в бак</div></div>
+        <div class="instr-step"><div class="instr-num">6</div><div>Приготуй <strong>свіжу суміш</strong> 1:50 і залий невелику кількість (0.3–0.5л)</div></div>
+        <div class="instr-step"><div class="instr-num">7</div><div>Запусти і дай прогрітись 2–3 хвилини на холостих перед роботою</div></div>
+        <div class="instr-ok">✓ Якщо після зими не заводиться — перший крок: прочисти карбюратор і замін свічку</div>`
+      }
+    ],
+    checklist: {
+      id: 'cs-checks',
+      title: '✅ Перевірки по заправках',
+      subtitle: 'Відмічай після кожної заправки. Після 5 заправок — перевір все і скинь.',
+      items: [
+        { id:'cs1', label:'Рівень мастила ланцюга в баку' },
+        { id:'cs2', label:'Натяг ланцюга (легко рухається рукою без провисання)' },
+        { id:'cs3', label:'Чистота повітряного фільтра (немає забивання)' },
+        { id:'cs4', label:'Стан зубців ланцюга (не затуплені)' },
+        { id:'cs5', label:'Немає підтікань палива або мастила' },
+      ]
+    }
+  },
+
+  brushcutter: {
+    name: '🌿 Бензокоса Sequoia SPB4325',
+    sections: [
+      {
+        id: 'bc-fuel', title: '⛽ Паливо та суміш', open: true,
+        content: `<h4>Тип палива</h4>
+        <div class="instr-note">⚠️ Двигун 2Т — тільки суміш! Чистий бензин спалить поршень</div>
+        <div class="instr-step"><div class="instr-num">1</div><div>Бензин: <strong>АИ-92</strong></div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Масло 2Т: Husqvarna HP або Stihl HP</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Пропорція: <strong>1:50</strong> — 20мл масла на 1л бензину</div></div>
+        <div class="instr-tip">💡 0.5л → 10мл · 1л → 20мл · 2л → 40мл масла</div>
+        <h4>Як готувати суміш</h4>
+        <div class="instr-step"><div class="instr-num">1</div><div>Відміряй масло шприцом або мірною ємністю</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Залий масло в каністру, потім бензин, збовтай 15 сек</div></div>
+        <div class="instr-note">⚠️ Суміш зберігати не більше 30 днів</div>`
+      },
+      {
+        id: 'bc-gearbox', title: '⚙️ Мастило редуктора', open: false,
+        content: `<h4>Що таке редуктор коси</h4>
+        <div class="instr-tip">ℹ️ Редуктор — це металевий вузол внизу штанги, до якого кріпиться ніж або котушка. Всередині — шестерні, які потребують змащення.</div>
+        <div class="instr-note">⚠️ Ти ніколи не заливав мастило в редуктор — потрібно зробити це якомога швидше!</div>
+        <h4>Яке мастило</h4>
+        <div class="instr-step"><div class="instr-num">1</div><div><strong>Консистентне мастило</strong> (густе) — Литол-24 або спеціальне мастило для редукторів кіс</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Кількість: <strong>20–30г</strong> (приблизно 1–1.5 столових ложки)</div></div>
+        <h4>Як заливати</h4>
+        <div class="instr-step"><div class="instr-num">1</div><div>Знайди на редукторі <strong>гвинт-заглушку</strong> (зазвичай збоку або знизу, під хрестову викрутку)</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Відкрути заглушку</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Закачай мастило шприцом або спеціальним тюбиком через отвір</div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div>Закрути заглушку назад</div></div>
+        <h4>Як часто</h4>
+        <div class="instr-ok">✓ Кожні <strong>20–25 мотогодин</strong> або раз на сезон — перевіряй і доливай при потребі</div>
+        <div class="instr-ok">✓ Якщо редуктор гріється або шумить — долити мастило негайно</div>`
+      },
+      {
+        id: 'bc-to', title: '🔧 Технічне обслуговування', open: false,
+        content: `<h4>Самостійне ТО</h4>
+        <div class="instr-step"><div class="instr-num">1</div><div><strong>Кожні 10 годин</strong> — перевірити/почистити повітряний фільтр</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div><strong>Кожні 20–25 годин</strong> — перевірити мастило редуктора, стан ножа/котушки</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div><strong>Кожні 50 годин</strong> — замінити свічку запалення</div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div><strong>По необхідності</strong> — замінити або відточити ніж, замінити жилку в котушці</div></div>
+        <h4>Сервісний центр</h4>
+        <div class="instr-ok">✓ Везти в СЦ кожні <strong>100 мотогодин</strong> або раз на сезон — карбюратор, зчеплення, загальна діагностика</div>`
+      },
+      {
+        id: 'bc-winter', title: '❄️ Консервування на зиму', open: false,
+        content: `<div class="instr-step"><div class="instr-num">1</div><div>Злий залишки <strong>паливної суміші</strong> з бака</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Запусти і дай попрацювати поки не зупиниться — спустошить карбюратор</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Зніми і почисти <strong>ніж або котушку</strong></div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div>Перевір і долий <strong>мастило в редуктор</strong> (щоб на зиму був повний)</div></div>
+        <div class="instr-step"><div class="instr-num">5</div><div>Почисти <strong>повітряний фільтр</strong></div></div>
+        <div class="instr-step"><div class="instr-num">6</div><div>Протри зовнішні поверхні від бруду і трави</div></div>
+        <div class="instr-step"><div class="instr-num">7</div><div>Зберігай вертикально або горизонтально у сухому місці</div></div>`
+      },
+      {
+        id: 'bc-spring', title: '🌱 Підготовка до сезону', open: false,
+        content: `<div class="instr-step"><div class="instr-num">1</div><div>Перевір зовнішній стан штанги, захисного кожуха</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Перевір рівень мастила в <strong>редукторі</strong></div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Перевір або заміни <strong>свічку запалення</strong></div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div>Почисти або заміни <strong>повітряний фільтр</strong></div></div>
+        <div class="instr-step"><div class="instr-num">5</div><div>Встанови ніж або нову жилку в котушку</div></div>
+        <div class="instr-step"><div class="instr-num">6</div><div>Залий <strong>свіжу суміш</strong> 1:50</div></div>
+        <div class="instr-step"><div class="instr-num">7</div><div>Запусти, прогрій 2–3 хв на холостих</div></div>`
+      }
+    ],
+    checklist: {
+      id: 'bc-checks',
+      title: '✅ Перевірки по заправках',
+      subtitle: 'Відмічай після кожної заправки. Після 5 заправок — перевір все і скинь.',
+      items: [
+        { id:'bc1', label:'Рівень мастила в редукторі (немає стукоту, не гріється)' },
+        { id:'bc2', label:'Стан ножа або жилки в котушці' },
+        { id:'bc3', label:'Чистота повітряного фільтра' },
+        { id:'bc4', label:'Надійність кріплення ножа/котушки' },
+        { id:'bc5', label:'Немає підтікань палива' },
+      ]
+    }
+  },
+
+  cultivator: {
+    name: '🌱 Культиватор Dnipro-M M85 (4T)',
+    sections: [
+      {
+        id: 'cv-fuel', title: '⛽ Паливо та масло', open: true,
+        content: `<h4>Тип двигуна</h4>
+        <div class="instr-ok">✓ 4-тактний двигун — бензин і масло НЕ змішуються!</div>
+        <h4>Бензин</h4>
+        <div class="instr-step"><div class="instr-num">1</div><div>Заливати <strong>чистий АИ-92</strong> або АИ-95 в паливний бак</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Паливний бак — окремо від масляного картера</div></div>
+        <h4>Масло в картер двигуна</h4>
+        <div class="instr-step"><div class="instr-num">1</div><div>Тип масла: <strong>10W-30</strong> або <strong>10W-40</strong></div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Рекомендовані марки: <strong>Motul Garden 4T</strong> або <strong>Liqui Moly Garden</strong></div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Об'єм картера: <strong>0.6л</strong></div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div>Перевіряй рівень щупом <strong>перед кожним використанням</strong></div></div>
+        <div class="instr-note">⚠️ Ніколи не запускати з низьким рівнем масла — двигун клинить миттєво!</div>
+        <div class="instr-step"><div class="instr-num">5</div><div>Заміна масла: <strong>кожні 50 мотогодин</strong> або раз на сезон</div></div>`
+      },
+      {
+        id: 'cv-to', title: '🔧 Технічне обслуговування', open: false,
+        content: `<h4>Самостійне ТО</h4>
+        <div class="instr-step"><div class="instr-num">1</div><div><strong>Перед кожним використанням</strong> — рівень масла щупом</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div><strong>Кожні 10 годин</strong> — чистити повітряний фільтр</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div><strong>Кожні 50 годин</strong> — замінити масло в картері (0.6л, 10W-30/40)</div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div><strong>Кожні 50 годин</strong> — замінити свічку запалення</div></div>
+        <div class="instr-step"><div class="instr-num">5</div><div><strong>По необхідності</strong> — перевірити стан фрез, підтягнути болти кріплення</div></div>
+        <h4>Сервісний центр</h4>
+        <div class="instr-ok">✓ Везти в СЦ кожні <strong>100 мотогодин</strong> або раз на 2 сезони — карбюратор, клапани, зчеплення</div>`
+      },
+      {
+        id: 'cv-winter', title: '❄️ Консервування на зиму', open: false,
+        content: `<div class="instr-step"><div class="instr-num">1</div><div>Злий залишки <strong>бензину</strong> з бака</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Запусти і дай попрацювати до зупинки — спустошить карбюратор</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div><strong>Заміни масло в картері</strong> — зливай тепле масло після роботи, залий свіже 10W-30/40</div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div>Почисти <strong>повітряний фільтр</strong></div></div>
+        <div class="instr-step"><div class="instr-num">5</div><div>Почисти фрези від землі та рослинних залишків</div></div>
+        <div class="instr-step"><div class="instr-num">6</div><div>Протри металеві частини — змасти фрези тонким шаром масла від іржі</div></div>
+        <div class="instr-step"><div class="instr-num">7</div><div>Зберігай у сухому місці</div></div>
+        <div class="instr-tip">💡 Якщо є — накрий агрегат щоб не збирав пил</div>`
+      },
+      {
+        id: 'cv-spring', title: '🌱 Підготовка до сезону', open: false,
+        content: `<div class="instr-step"><div class="instr-num">1</div><div>Перевір рівень масла щупом, при потребі долий до позначки MAX</div></div>
+        <div class="instr-step"><div class="instr-num">2</div><div>Перевір стан <strong>повітряного фільтра</strong> — при потребі замін</div></div>
+        <div class="instr-step"><div class="instr-num">3</div><div>Перевір <strong>свічку запалення</strong></div></div>
+        <div class="instr-step"><div class="instr-num">4</div><div>Перевір кріплення фрез — всі болти затягнуті</div></div>
+        <div class="instr-step"><div class="instr-num">5</div><div>Залий свіжий <strong>АИ-92</strong> в бак</div></div>
+        <div class="instr-step"><div class="instr-num">6</div><div>Запусти, прогрій 3–5 хвилин без навантаження</div></div>
+        <div class="instr-ok">✓ Якщо після зими не заводиться — промий карбюратор, перевір свічку і повітряний фільтр</div>`
+      }
+    ],
+    checklist: {
+      id: 'cv-checks',
+      title: '✅ Перевірки по заправках',
+      subtitle: 'Відмічай перед кожним використанням. Після 3 заправок — перевір все і скинь.',
+      items: [
+        { id:'cv1', label:'Рівень масла в картері (щуп між MIN і MAX)' },
+        { id:'cv2', label:'Чистота повітряного фільтра' },
+        { id:'cv3', label:'Кріплення фрез (болти затягнуті)' },
+        { id:'cv4', label:'Немає підтікань масла або бензину' },
+        { id:'cv5', label:'Стан ременя/передачі (якщо є)' },
+      ]
+    }
+  }
+};
+
+let activeInstr = 'chainsaw';
+let instrCollapsed = {};
+let checklistState = {};
+
+async function loadInstrData(){
+  try{const r=await window.storage.get('instr_collapsed_v1');if(r)instrCollapsed=JSON.parse(r.value);}catch{}
+  try{const r=await window.storage.get('checklist_v1');if(r)checklistState=JSON.parse(r.value);}catch{}
+}
+async function saveInstrCollapsed(){lsSet('instr_collapsed_v1',instrCollapsed);}
+async function saveChecklist(){lsSet('checklist_v1',checklistState);}
+
+function switchInstr(id){
+  activeInstr=id;
+  document.querySelectorAll('#instr-subtabs .diag-stab').forEach((b,i)=>{
+    b.classList.toggle('active',['chainsaw','brushcutter','cultivator'][i]===id);
+  });
+  renderInstr();
+}
+
+function renderInstr(){
+  const data=INSTRUCTIONS[activeInstr];
+  if(!data){return;}
+  const el=document.getElementById('instr-content');
+
+  // Checklist
+  const cl=data.checklist;
+  const clState=checklistState[cl.id]||{};
+  const allDone=cl.items.every(i=>clState[i.id]);
+  const doneCount=cl.items.filter(i=>clState[i.id]).length;
+
+  let html=`<div class="checklist-card">
+    <div class="checklist-title">${cl.title} <span style="font-size:11px;color:var(--text-muted);font-weight:400">${doneCount}/${cl.items.length}</span></div>
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">${cl.subtitle}</div>
+    ${cl.items.map(item=>{
+      const checked=!!clState[item.id];
+      return`<div class="checklist-item">
+        <div class="cl-cb${checked?' checked':''}" onclick="toggleCheck('${cl.id}','${item.id}')">${checked?'✓':''}</div>
+        <div class="cl-label${checked?' checked':''}">${item.label}</div>
+      </div>`;
+    }).join('')}
+    <button class="btn-sm" style="margin-top:10px;font-size:11px" onclick="resetChecklist('${cl.id}')">↺ Скинути всі відмітки</button>
+  </div>`;
+
+  // Sections
+  data.sections.forEach(sec=>{
+    const isOpen=instrCollapsed[sec.id]===undefined?sec.open:!instrCollapsed[sec.id];
+    html+=`<div class="instr-section">
+      <div class="instr-section-header" onclick="toggleInstrSection('${sec.id}')">
+        <div class="instr-section-title">${sec.title}</div>
+        <span style="font-size:12px;color:var(--text-muted);transition:transform 0.2s;display:inline-block;transform:rotate(${isOpen?'180':'0'}deg)">▼</span>
+      </div>
+      <div id="isec-${sec.id}" style="overflow:hidden;max-height:${isOpen?'2000px':'0'};transition:max-height 0.25s ease">
+        <div class="instr-body">${sec.content}</div>
+      </div>
+    </div>`;
+  });
+
+  el.innerHTML=html;
+}
+
+function toggleInstrSection(id){
+  const el=document.getElementById('isec-'+id);
+  const isOpen=el.style.maxHeight!=='0px'&&el.style.maxHeight!=='0';
+  instrCollapsed[id]=isOpen;
+  el.style.maxHeight=isOpen?'0':'2000px';
+  saveInstrCollapsed();
+  // rotate arrow
+  const header=el.previousElementSibling;
+  if(header){const arr=header.querySelector('span');if(arr)arr.style.transform=isOpen?'rotate(0deg)':'rotate(180deg)';}
+}
+
+function toggleCheck(clId,itemId){
+  if(!checklistState[clId])checklistState[clId]={};
+  checklistState[clId][itemId]=!checklistState[clId][itemId];
+  saveChecklist();
+  renderInstr();
+}
+
+function resetChecklist(clId){
+  checklistState[clId]={};
+  saveChecklist();
+  renderInstr();
+}
+
+function toggleMenu(){
+  const ov=document.getElementById('dropdown-overlay');
+  ov.classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('dropdown-overlay').classList.remove('open');
+}
+
+const MAIN_TABS=['dash','checkin','diag','history'];
+const MENU_TABS=['parts','instructions','settings'];
+
+function switchTab(name){
+  // Main tabs highlight
+  document.querySelectorAll('.tabs .tab').forEach((t,i)=>{
+    t.classList.toggle('active', MAIN_TABS[i]===name);
+  });
+  // Menu items highlight
+  MENU_TABS.forEach(id=>{
+    const el=document.getElementById('dmenu-'+id);
+    if(el) el.classList.toggle('active', id===name);
+  });
+  // Menu button highlight when in menu section
+  const menuBtn=document.getElementById('menu-btn');
+  if(menuBtn) menuBtn.style.color=MENU_TABS.includes(name)?'var(--text-accent)':'var(--text-secondary)';
+
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  if(name==='checkin') renderCheckin();
+  if(name==='diag'){ renderDiagCtx(); renderDiagMsgs(); }
+  if(name==='instructions'){ renderInstr(); }
+}
 
 loadData();
 </script>
