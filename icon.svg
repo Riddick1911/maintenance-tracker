@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 680 680">
+
+<defs>
+  <linearGradient id="whandle" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#50507a"/>
+    <stop offset="40%" stop-color="#9090b0"/>
+    <stop offset="100%" stop-color="#50507a"/>
+  </linearGradient>
+  <linearGradient id="carbody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#e03030"/>
+    <stop offset="60%" stop-color="#b01818"/>
+    <stop offset="100%" stop-color="#7a0a0a"/>
+  </linearGradient>
+  <linearGradient id="carshadow" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#8a0e0e"/>
+    <stop offset="100%" stop-color="#500505"/>
+  </linearGradient>
+  <linearGradient id="roofgrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#ee4444"/>
+    <stop offset="100%" stop-color="#aa1616"/>
+  </linearGradient>
+  <linearGradient id="windshield" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0%" stop-color="#aaccee" stop-opacity="0.9"/>
+    <stop offset="100%" stop-color="#223344" stop-opacity="0.7"/>
+  </linearGradient>
+  <linearGradient id="rwindow" x1="0" y1="0" x2="0.2" y2="1">
+    <stop offset="0%" stop-color="#8ab0cc" stop-opacity="0.8"/>
+    <stop offset="100%" stop-color="#1a2a3a" stop-opacity="0.7"/>
+  </linearGradient>
+  <linearGradient id="groundrefl" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#cc2020" stop-opacity="0.4"/>
+    <stop offset="100%" stop-color="#cc2020" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="wheelrim" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#ccccdd"/>
+    <stop offset="100%" stop-color="#666677"/>
+  </linearGradient>
+</defs>
+
+<rect width="680" height="680" rx="120" fill="#12121e"/>
+<rect width="680" height="200" rx="100" fill="#161628"/>
+
+<!-- WRENCH -->
+<g transform="translate(460, 200) rotate(40)" opacity="0.92">
+  <rect x="-11" y="-70" width="22" height="140" rx="5" fill="url(#whandle)"/>
+  <rect x="-4" y="-55" width="5" height="110" rx="2" fill="#b0b0cc" opacity="0.4"/>
+  <ellipse cx="0" cy="-72" rx="30" ry="22" fill="#9090b0"/>
+  <ellipse cx="0" cy="-72" rx="20" ry="14" fill="#12121e"/>
+  <rect x="-9" y="-84" width="18" height="12" rx="2" fill="#12121e"/>
+  <ellipse cx="-8" cy="-78" rx="8" ry="5" fill="#bbbbdd" opacity="0.4"/>
+  <ellipse cx="0" cy="72" rx="30" ry="22" fill="#9090b0"/>
+  <ellipse cx="0" cy="72" rx="20" ry="14" fill="#12121e"/>
+  <rect x="-9" y="72" width="18" height="12" rx="2" fill="#12121e"/>
+</g>
+
+<!-- GROUND -->
+<ellipse cx="340" cy="430" rx="155" ry="14" fill="#000000" opacity="0.35"/>
+<path d="M185 430 L495 430 L480 460 L200 460 Z" fill="url(#groundrefl)" opacity="0.25"/>
+
+<!-- CAR BODY -->
+<path d="M200 350 Q210 400 260 408 L420 408 Q460 402 475 390 L475 380 Q460 388 420 392 L260 392 Q220 388 200 380 Z" fill="#300505"/>
+<path d="M198 350 Q196 367 200 390 L200 350 Z" fill="url(#carshadow)"/>
+<path d="M200 350 Q220 340 280 332 L400 332 Q445 335 475 350 L475 390 Q460 402 420 408 L260 408 Q220 400 200 390 Z" fill="url(#carbody)"/>
+
+<!-- ROOF -->
+<path d="M268 278 Q275 262 295 255 L385 255 Q405 259 415 272 L430 296 Q418 290 395 286 L285 286 Q268 290 258 298 Z" fill="url(#roofgrad)"/>
+<path d="M295 257 Q340 252 380 257 L375 263 Q340 259 305 263 Z" fill="#ff7070" opacity="0.5"/>
+
+<!-- PILLARS -->
+<path d="M258 298 Q268 278 268 278 L285 286 Q278 293 272 306 Z" fill="#cc2020"/>
+<path d="M430 296 Q420 278 415 272 L395 286 Q402 293 408 306 Z" fill="#aa1010"/>
+
+<!-- WINDSHIELD -->
+<path d="M272 306 Q278 293 285 286 L395 286 Q402 293 408 306 L392 323 Q370 316 308 316 Z" fill="url(#windshield)"/>
+<path d="M280 300 L295 290 L310 292 L296 302 Z" fill="#ffffff" opacity="0.3"/>
+
+<!-- REAR WINDOW -->
+<path d="M408 306 L395 286 L415 272 L430 296 Z" fill="url(#rwindow)"/>
+
+<!-- HOOD -->
+<path d="M408 306 L430 296 L475 336 L475 350 Q445 335 400 332 Z" fill="#c01818"/>
+<path d="M415 310 L440 303 L470 330 L458 336 Z" fill="#ee4444" opacity="0.4"/>
+<path d="M438 323 Q448 320 458 323 L455 333 Q448 331 441 333 Z" fill="#800808"/>
+
+<!-- REAR -->
+<path d="M200 350 L200 380 L200 350 Z" fill="#880808"/>
+<path d="M200 350 L210 345 L210 390 L200 390 Z" fill="#990a0a"/>
+
+<!-- SPOILER -->
+<path d="M200 333 L200 350 L210 345 L215 330 Z" fill="#cc1818"/>
+<path d="M200 323 L200 336 L190 333 L190 320 Z" fill="#aa0808"/>
+<path d="M188 320 L225 316 L225 322 L188 326 Z" fill="#333344"/>
+<path d="M188 316 L225 312 L225 318 L188 322 Z" fill="#555566"/>
+
+<!-- FRONT BUMPER -->
+<path d="M470 350 L475 350 L475 390 L465 394 L460 377 L470 372 Z" fill="#aa1010"/>
+<path d="M460 390 L475 390 L478 396 L458 396 Z" fill="#222233"/>
+<path d="M462 362 L474 362 L474 377 L462 377 Z" fill="#1a0808"/>
+<path d="M464 364 L472 364 L472 370 L464 370 Z" fill="#2a1010" opacity="0.7"/>
+
+<!-- HEADLIGHT FRONT -->
+<path d="M462 338 L474 335 L475 350 L462 352 Z" fill="#ffffcc" opacity="0.9"/>
+<path d="M462 338 L474 335 L475 342 L462 344 Z" fill="#ffffff" opacity="0.6"/>
+<line x1="464" y1="336" x2="474" y2="333" stroke="#ffffaa" stroke-width="2" opacity="0.8"/>
+
+<!-- REAR LIGHT -->
+<path d="M200 336 L210 334 L210 348 L200 350 Z" fill="#ff4444" opacity="0.9"/>
+<line x1="202" y1="338" x2="208" y2="336" stroke="#ff6666" stroke-width="2.5"/>
+
+<!-- FRONT WHEEL -->
+<circle cx="418" cy="408" r="42" fill="#1a1a2a"/>
+<circle cx="418" cy="408" r="34" fill="#252535"/>
+<circle cx="418" cy="408" r="32" fill="url(#wheelrim)"/>
+<circle cx="418" cy="408" r="18" fill="#1a1a2a"/>
+<circle cx="418" cy="408" r="11" fill="#303045"/>
+<line x1="418" y1="376" x2="418" y2="390" stroke="#888899" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="418" y1="426" x2="418" y2="440" stroke="#888899" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="386" y1="408" x2="400" y2="408" stroke="#888899" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="436" y1="408" x2="450" y2="408" stroke="#888899" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="395" y1="385" x2="406" y2="396" stroke="#888899" stroke-width="3" stroke-linecap="round"/>
+<line x1="430" y1="420" x2="441" y2="431" stroke="#888899" stroke-width="3" stroke-linecap="round"/>
+<line x1="441" y1="385" x2="430" y2="396" stroke="#888899" stroke-width="3" stroke-linecap="round"/>
+<line x1="406" y1="420" x2="395" y2="431" stroke="#888899" stroke-width="3" stroke-linecap="round"/>
+<rect x="448" y="397" width="9" height="22" rx="2" fill="#ee4444"/>
+
+<!-- REAR WHEEL -->
+<circle cx="262" cy="408" r="42" fill="#1a1a2a"/>
+<circle cx="262" cy="408" r="34" fill="#252535"/>
+<circle cx="262" cy="408" r="32" fill="url(#wheelrim)"/>
+<circle cx="262" cy="408" r="18" fill="#1a1a2a"/>
+<circle cx="262" cy="408" r="11" fill="#303045"/>
+<line x1="262" y1="376" x2="262" y2="390" stroke="#888899" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="262" y1="426" x2="262" y2="440" stroke="#888899" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="230" y1="408" x2="244" y2="408" stroke="#888899" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="280" y1="408" x2="294" y2="408" stroke="#888899" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="239" y1="385" x2="250" y2="396" stroke="#888899" stroke-width="3" stroke-linecap="round"/>
+<line x1="274" y1="420" x2="285" y2="431" stroke="#888899" stroke-width="3" stroke-linecap="round"/>
+<line x1="285" y1="385" x2="274" y2="396" stroke="#888899" stroke-width="3" stroke-linecap="round"/>
+<line x1="250" y1="420" x2="239" y2="431" stroke="#888899" stroke-width="3" stroke-linecap="round"/>
+<rect x="235" y="397" width="9" height="22" rx="2" fill="#ee4444"/>
+
+<!-- BODY SHINE -->
+<path d="M310 340 Q340 335 370 340 L365 350 Q340 346 315 350 Z" fill="#ff6060" opacity="0.25"/>
+
+<!-- EXHAUST -->
+<ellipse cx="212" cy="398" rx="6" ry="5" fill="#333344"/>
+<ellipse cx="226" cy="398" rx="6" ry="5" fill="#333344"/>
+<ellipse cx="212" cy="398" rx="3.5" ry="3" fill="#111122"/>
+<ellipse cx="226" cy="398" rx="3.5" ry="3" fill="#111122"/>
+
+</svg>
