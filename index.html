@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ТО Трекер">
+<title>ТО Трекер</title>
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface-0: #141418;
+    --surface-1: #1c1c22;
+    --surface-2: #242430;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.15);
+    --border-accent: rgba(99,153,255,0.4);
+    --text-primary: #f0f0f5;
+    --text-secondary: #9999b0;
+    --text-muted: #666680;
+    --text-accent: #7eb3ff;
+    --text-success: #6fcf97;
+    --text-warning: #f2c94c;
+    --text-danger: #eb5757;
+    --fill-accent: #4a7fd4;
+    --on-accent: #fff;
+    --bg-accent: rgba(74,127,212,0.15);
+    --bg-success: rgba(111,207,151,0.15);
+    --bg-warning: rgba(242,201,76,0.15);
+    --bg-danger: rgba(235,87,87,0.15);
+    --radius: 8px;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: var(--font-sans); background: var(--bg); color: var(--text-primary); min-height: 100dvh; max-width: 480px; margin: 0 auto; }
+
+  .app { display: flex; flex-direction: column; min-height: 100dvh; }
+  .app-header { padding: 14px 16px 10px; background: var(--surface-1); border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
+  .app-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+  .app-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+  .tabs { display: flex; border-bottom: 0.5px solid var(--border); background: var(--surface-1); flex-shrink: 0; overflow-x: auto; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex: 1; padding: 10px 4px; font-size: 11px; color: var(--text-secondary); cursor: pointer; text-align: center; border: none; background: none; border-bottom: 2px solid transparent; white-space: nowrap; min-width: 56px; font-family: var(--font-sans); }
+  .tab.active { color: var(--text-accent); border-bottom-color: var(--fill-accent); font-weight: 500; }
+
+  .panel { display: none; padding: 14px; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; }
+  .panel.active { display: flex; }
+  .section-label { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.7px; }
+
+  /* Cards */
+  .vehicle-card { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .vc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .vc-name { font-size: 15px; font-weight: 500; }
+  .vc-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .status-badge { font-size: 10px; padding: 3px 9px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+  .ok { background: var(--bg-success); color: var(--text-success); }
+  .warn { background: var(--bg-warning); color: var(--text-warning); }
+  .due { background: var(--bg-danger); color: var(--text-danger); }
+  .neutral { background: var(--surface-1); color: var(--text-secondary); border: 0.5px solid var(--border); }
+
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .stat-box { background: var(--surface-1); border-radius: var(--radius); padding: 8px 10px; }
+  .stat-label { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; }
+  .stat-val { font-size: 18px; font-weight: 500; line-height: 1.2; }
+  .stat-unit { font-size: 11px; color: var(--text-secondary); font-weight: 400; }
+
+  .interval-row { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .interval-label { font-size: 11px; color: var(--text-muted); }
+  .interval-btn { padding: 4px 11px; border-radius: 20px; font-size: 12px; font-family: var(--font-sans); cursor: pointer; border: 0.5px solid var(--border-strong); background: none; color: var(--text-secondary); }
+  .interval-btn.active { background: var(--bg-accent); color: var(--text-accent); border-color: var(--border-accent); font-weight: 500; }
+
+  .progress-row { margin-bottom: 8px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+  .progress-track { height: 5px; background: var(--surface-0); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+  .fill-ok { background: #4a9e6b; } .fill-warn { background: #b08020; } .fill-due { background: #a03030; }
+
+  .vc-update { display: flex; gap: 6px; margin-top: 8px; }
+  .inp-km { flex: 1; padding: 9px 12px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); font-size: 16px; font-family: var(--font-sans); background: var(--surface-1); color: var(--text-primary); }
+  .inp-km:focus { outline: none; border-color: var(--border-accent); }
+  .btn-upd { padding: 9px 14px; border-radius: var(--radius); border: none; background: var(--fill-accent); color: #fff; cursor: pointer; font-size: 13px; font-family: var(--font-sans); white-space: nowrap; font-weight: 500; }
+
+  .tool-card { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+  .tool-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .tool-name { font-size: 14px; font-weight: 500; }
+  .tool-model { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .tool-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+  .tool-stat { background: var(--surface-1); border-radius: var(--radius); padding: 6px 9px; }
+  .tool-stat .stat-label { font-size: 10px; }
+  .tool-stat .stat-val { font-size: 14px; }
+  .tool-actions { display: flex; gap: 6px; }
+  .btn-sm { padding: 7px 12px; border-radius: var(--radius); border: 0.5px solid var(--border-strong); background: none; cursor: pointer; color: var(--text-secondary); font-size: 12px; font-family: var(--font-sans); }
+  .btn-oil { padding: 7px 12px; border-radius: var(--radius); border: none; background: var(--bg-success); color: var(--text-success); cursor: pointer; font-size: 12px; font-family: var(--font-sans); font-weight: 500; }
+
+  /* Parts */
+  .parts-group { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .parts-group-header { padding: 11px 14px; background: var(--surface-1); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .parts-group-title { font-size: 13px; font-weight: 500; }
+  .parts-group-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .parts-group-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .collapse-icon { font-size: 12px; color: var(--text-muted); transition: transform 0.2s; display: inline-block; }
+  .collapse-icon.open { transform: rotate(180deg); }
+  .group-badge { font-size: 10px; padding: 2px 7px; border-radius: 20px; background: var(--surface-2); color: var(--text-muted); border: 0.5px solid var(--border); }
+  .group-body { overflow: hidden; transition: max-height 0.25s ease; }
+  .group-body.collapsed { max-height: 0 !important; }
+  .part-row { padding: 10px 14px; border-top: 0.5px solid var(--border); }
+  .part-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .part-left { flex: 1; min-width: 0; }
+  .part-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .part-note { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .part-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .part-article { font-size: 12px; font-weight: 500; color: var(--text-accent); background: var(--bg-accent); padding: 2px 8px; border-radius: 20px; white-space: nowrap; cursor: pointer; display: inline-block; }
+  .part-article.custom { background: var(--bg-success); color: var(--text-success); }
+  .part-brand { font-size: 11px; color: var(--text-secondary); }
+  .part-brand.custom { color: var(--text-success); font-weight: 500; }
+  .part-edit-row { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
+  .part-edit-inp { padding: 6px 8px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); font-size: 13px; font-family: var(--font-sans); background: var(--surface-1); color: var(--text-primary); width: 105px; }
+  .part-edit-inp:focus { outline: none; border-color: var(--border-accent); }
+  .btn-edit { font-size: 11px; padding: 5px 10px; border-radius: var(--radius); border: 0.5px solid var(--border-strong); background: none; cursor: pointer; color: var(--text-secondary); font-family: var(--font-sans); }
+  .btn-save-part { font-size: 12px; padding: 5px 10px; border-radius: var(--radius); border: none; background: var(--fill-accent); color: #fff; cursor: pointer; font-family: var(--font-sans); }
+  .btn-reset-part { font-size: 11px; padding: 5px 10px; border-radius: var(--radius); border: 0.5px solid var(--border); background: none; cursor: pointer; color: var(--text-muted); font-family: var(--font-sans); }
+  .default-hint { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+  /* Check-in */
+  .checkin-card { background: var(--surface-2); border: 0.5px solid var(--border-accent); border-radius: 12px; padding: 16px; }
+  .checkin-from { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+  .checkin-bubble { background: var(--surface-1); border-radius: 0 12px 12px 12px; padding: 12px 14px; font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+  .checkin-input { width: 100%; padding: 11px 12px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); font-size: 16px; font-family: var(--font-sans); background: var(--surface-1); color: var(--text-primary); margin-bottom: 8px; }
+  .checkin-input:focus { outline: none; border-color: var(--border-accent); }
+  .checkin-btns { display: flex; gap: 8px; }
+  .btn-skip { flex: 1; padding: 10px; border-radius: var(--radius); border: 0.5px solid var(--border-strong); background: none; cursor: pointer; font-size: 13px; font-family: var(--font-sans); color: var(--text-secondary); }
+  .btn-confirm { flex: 2; padding: 10px; border-radius: var(--radius); border: none; background: var(--fill-accent); color: #fff; cursor: pointer; font-size: 13px; font-family: var(--font-sans); font-weight: 500; }
+  .checkin-done { text-align: center; padding: 40px 20px; color: var(--text-secondary); font-size: 14px; }
+
+  /* Diag */
+  .diag-subtabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .diag-stab { padding: 7px 13px; border-radius: 20px; font-size: 12px; font-family: var(--font-sans); cursor: pointer; border: 0.5px solid var(--border-strong); background: none; color: var(--text-secondary); white-space: nowrap; }
+  .diag-stab.active { background: var(--bg-accent); color: var(--text-accent); border-color: var(--border-accent); font-weight: 500; }
+  .diag-context-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 9px 12px; font-size: 12px; color: var(--text-secondary); }
+  .diag-context-card strong { color: var(--text-primary); font-weight: 500; }
+  .diag-msgs { display: flex; flex-direction: column; gap: 8px; min-height: 160px; flex: 1; }
+  .dmsg { display: flex; flex-direction: column; gap: 3px; }
+  .dmsg.user { align-items: flex-end; }
+  .dmsg.ai { align-items: flex-start; }
+  .dbubble { padding: 10px 13px; border-radius: 16px; font-size: 13px; line-height: 1.55; max-width: 88%; white-space: pre-wrap; }
+  .dmsg.user .dbubble { background: var(--fill-accent); color: #fff; border-bottom-right-radius: 4px; }
+  .dmsg.ai .dbubble { background: var(--surface-1); border: 0.5px solid var(--border); border-bottom-left-radius: 4px; }
+  .dmsg.ai .dbubble.thinking { color: var(--text-muted); font-style: italic; }
+  .diag-input-row { display: flex; gap: 7px; border-top: 0.5px solid var(--border); padding-top: 10px; margin-top: auto; }
+  .diag-input-row textarea { flex: 1; resize: none; border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 9px 12px; font-size: 14px; font-family: var(--font-sans); background: var(--surface-1); color: var(--text-primary); height: 42px; line-height: 1.4; overflow: hidden; }
+  .diag-input-row textarea:focus { outline: none; border-color: var(--border-accent); }
+  .send-btn { width: 42px; height: 42px; border-radius: var(--radius); border: none; background: var(--fill-accent); color: #fff; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* History */
+  .hist-item { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 12px; display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .modal-box { background: var(--surface-2); border-radius: 16px; padding: 20px; width: 100%; max-width: 300px; border: 0.5px solid var(--border-strong); }
+  .modal-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .modal-note { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+  .modal-input { width: 100%; padding: 11px 12px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); font-size: 18px; font-family: var(--font-sans); background: var(--surface-1); color: var(--text-primary); margin-bottom: 12px; }
+  .modal-input:focus { outline: none; border-color: var(--border-accent); }
+  .modal-btns { display: flex; gap: 8px; }
+  .modal-cancel { flex: 1; padding: 10px; border-radius: var(--radius); border: 0.5px solid var(--border-strong); background: none; cursor: pointer; font-size: 14px; font-family: var(--font-sans); color: var(--text-secondary); }
+  .modal-ok { flex: 2; padding: 10px; border-radius: var(--radius); border: none; background: var(--fill-accent); color: #fff; cursor: pointer; font-size: 14px; font-family: var(--font-sans); font-weight: 500; }
+
+  .hint { font-size: 11px; color: var(--text-muted); text-align: center; padding: 2px 0 6px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="app-header">
+    <div class="app-title">🔧 ТО Трекер</div>
+    <div class="app-sub">Skoda Octavia Tour · Dnipro-M техніка</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('dash')">📊 Дашборд</button>
+    <button class="tab" onclick="switchTab('parts')">🛒 Запчастини</button>
+    <button class="tab" onclick="switchTab('checkin')">💬 Check-in</button>
+    <button class="tab" onclick="switchTab('diag')">🔍 Діагностика</button>
+    <button class="tab" onclick="switchTab('history')">📋 Журнал</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="tab-dash" class="panel active">
+    <div class="section-label">Автомобіль</div>
+    <div class="vehicle-card">
+      <div class="vc-header">
+        <div><div class="vc-name">Skoda Octavia Tour · 2005</div><div class="vc-sub">1.6 бензин/газ · двигун BFQ</div></div>
+        <span class="status-badge" id="car-badge">—</span>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-label">Пробіг зараз</div><div class="stat-val" id="car-km-display">—</div><div class="stat-unit">км</div></div>
+        <div class="stat-box"><div class="stat-label">До заміни масла</div><div class="stat-val" id="car-km-left">—</div><div class="stat-unit">км</div></div>
+      </div>
+      <div class="interval-row">
+        <span class="interval-label">Інтервал:</span>
+        <button class="interval-btn" id="ibtn-7" onclick="setOilInterval(7000)">7 000 км</button>
+        <button class="interval-btn" id="ibtn-8" onclick="setOilInterval(8000)">8 000 км</button>
+        <button class="interval-btn" id="ibtn-10" onclick="setOilInterval(10000)">10 000 км</button>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span id="car-prog-label">Масло</span><span id="car-prog-pct">—</span></div>
+        <div class="progress-track"><div class="progress-fill fill-ok" id="car-prog-bar" style="width:0%"></div></div>
+      </div>
+      <div class="vc-update">
+        <input class="inp-km" id="car-km-input" type="number" inputmode="numeric" placeholder="Введи пробіг (км)">
+        <button class="btn-upd" onclick="updateCarKm()">Оновити</button>
+      </div>
+    </div>
+    <div class="section-label">Садова техніка · Dnipro-M</div>
+    <div id="tools-grid" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+
+  <!-- PARTS -->
+  <div id="tab-parts" class="panel">
+    <div class="section-label">При заміні масла — Skoda Octavia 1.6 BFQ</div>
+    <div id="parts-list" style="display:flex;flex-direction:column;gap:10px"></div>
+    <div class="hint">Натисни заголовок групи — згорнути/розгорнути.<br>Натисни артикул — скопіюється в буфер.</div>
+  </div>
+
+  <!-- CHECK-IN -->
+  <div id="tab-checkin" class="panel"><div id="checkin-content"></div></div>
+
+  <!-- DIAGNOSTICS -->
+  <div id="tab-diag" class="panel" style="gap:10px">
+    <div class="diag-subtabs">
+      <button class="diag-stab active" onclick="switchDiag('car')">🚗 Авто</button>
+      <button class="diag-stab" onclick="switchDiag('chainsaw')">⛓ Бензопила</button>
+      <button class="diag-stab" onclick="switchDiag('brushcutter')">🌿 Бензокоса</button>
+      <button class="diag-stab" onclick="switchDiag('cultivator')">🌱 Культиватор</button>
+    </div>
+    <div class="diag-context-card" id="diag-context-card"></div>
+    <div class="diag-msgs" id="diag-msgs"></div>
+    <div class="diag-input-row">
+      <textarea id="diag-input" placeholder="Опиши проблему..." onkeydown="diagKey(event)"></textarea>
+      <button class="send-btn" onclick="diagSend()">↑</button>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="tab-history" class="panel">
+    <div class="section-label">Журнал оновлень</div>
+    <div id="history-list" style="display:flex;flex-direction:column;gap:6px"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-note" id="modal-note"></div>
+    <input class="modal-input" id="modal-input" type="number" inputmode="decimal" step="0.5" placeholder="напр. 2.5">
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModalDirect()">Скасувати</button>
+      <button class="modal-ok" onclick="confirmModal()">Зберегти</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SK='maint_v4',HK='maint_hist_v1',PK='maint_parts_v1',CK='maint_collapsed_v1';
+
+// ---- ANTHROPIC API KEY ----
+// Вставте ваш ключ нижче (починається з sk-ant-)
+const API_KEY = 'ВСТАВТЕ_СВІЙ_КЛЮЧ_ТУТ';
+
+const PARTS_DEFAULT=[
+  {id:'engine',group:'🔧 Моторна олива та фільтри двигуна',sub:'Міняти кожні 8 000 км',items:[
+    {id:'oil',      name:'Моторна олива',           note:'4.5л · підходить для бензин+ГБО', defBrand:'Aral',         defArticle:'10W-40 SuperTronic'},
+    {id:'oil_flt',  name:'Масляний фільтр',          note:'Octavia Tour 1.4/1.6 · 97–05',   defBrand:'Mann-Filter',  defArticle:'W 712/54'},
+    {id:'air_flt',  name:'Повітряний фільтр',        note:'Octavia Tour 1.6 · до 2010',      defBrand:'Mann-Filter',  defArticle:'C 24 009'},
+    {id:'fuel_flt', name:'Паливний фільтр (бензин)', note:'Міняти кожні 60 000 км',          defBrand:'VAG оригінал', defArticle:'1J0127401A'},
+  ]},
+  {id:'gbo',group:'⛽ ГБО 4 покоління — газові фільтри',sub:'Раз на рік / кожні 10 000–15 000 км',items:[
+    {id:'gbo_coarse',name:'Фільтр грубої очистки',note:'Рідка фаза · перед редуктором',       defBrand:'Уточни у майстра',defArticle:'GFI-01'},
+    {id:'gbo_fine',  name:'Фільтр тонкої очистки',note:'Газова фаза · після редуктора (360°)',defBrand:'Уточни у майстра',defArticle:'GFI-02'},
+  ]},
+  {id:'tools2t',group:'🌿 Садова техніка — масло 2Т',sub:'Для суміші 1:50 (20мл на 1л АИ-92)',items:[
+    {id:'oil_2t',name:'Масло 2Т (бензопила / коса)',note:'Husqvarna HP або Stihl HP',defBrand:'Husqvarna',defArticle:'578357702'},
+  ]},
+];
+
+const TOOLS_DEF=[
+  {id:'chainsaw',   name:'Бензопила',   icon:'⛓', brand:'Dnipro-M', model:'NSG-45H', info:'2кВт · 260см³ · 07.2024', engineType:'2t', oilEveryHours:25, fuelMix:'⛽ Суміш 1:50 · 20мл масла 2Т на 1л АИ-92'},
+  {id:'brushcutter',name:'Бензокоса',   icon:'🌿', brand:'Sequoia',  model:'SPB4325',info:'2.5HP · 42.7cc',           engineType:'2t', oilEveryHours:25, fuelMix:'⛽ Суміш 1:50 · 20мл масла 2Т на 1л АИ-92'},
+  {id:'cultivator', name:'Культиватор', icon:'🌱', brand:'Dnipro-M', model:'M85',    info:'4-тактний двигун (4T)',    engineType:'4t', oilEveryHours:50, fuelMix:'⛽ Чистий АИ-92 · масло SAE 30 окремо в картер'},
+];
+
+const DIAG_DEFS={
+  car:{label:'🚗 Авто',gc:()=>{const{km,lastOilKm,oilInterval}=state.car;return km?`Пробіг: ${km.toLocaleString()} км. Інтервал: ${oilInterval.toLocaleString()} км. До заміни: ${lastOilKm?Math.max(0,oilInterval-(km-lastOilKm)).toLocaleString()+' км':'невідомо'}.`:'Пробіг не введено.';},sp:()=>`Ти — досвідчений автомеханік. Відповідай стисло, українською або суржиком.\n\nАвто: Skoda Octavia Tour 2005, 1.6 бензин/ГБО (BFQ). ${DIAG_DEFS.car.gc()}\n\nДай 2-3 найбільш ймовірних причини і що перевірити першим. Враховуй ГБО.`},
+  chainsaw:{label:'⛓ Бензопила',gc:()=>{const t=state.tools.chainsaw;return`Dnipro-M NSG-45H · ${t.motoHours.toFixed(1)} год, з заміни масла ${(t.motoHours-t.lastOilHours).toFixed(1)}г з 25г.`;},sp:()=>`Ти — майстер по бензопилах. Стисло, українською.\nБензопила Dnipro-M NSG-45H, 2Т, 260см³. ${DIAG_DEFS.chainsaw.gc()} Суміш 1:50.\nДай 2-3 причини і що перевірити першим.`},
+  brushcutter:{label:'🌿 Бензокоса',gc:()=>{const t=state.tools.brushcutter;return`Sequoia SPB4325 · ${t.motoHours.toFixed(1)} год (~6-7л з покупки), з заміни ${(t.motoHours-t.lastOilHours).toFixed(1)}г з 25г.`;},sp:()=>`Ти — майстер по бензокосах. Стисло, українською.\nБензокоса Sequoia SPB4325, 2Т, 42.7cc, 2.5HP. ${DIAG_DEFS.brushcutter.gc()} Суміш 1:50.\nДай 2-3 причини.`},
+  cultivator:{label:'🌱 Культиватор',gc:()=>{const t=state.tools.cultivator;return`Dnipro-M M85 (4T) · ${t.motoHours.toFixed(1)} год, з заміни ${(t.motoHours-t.lastOilHours).toFixed(1)}г з 50г.`;},sp:()=>`Ти — майстер по садовій техніці. Стисло, українською.\nКультиватор Dnipro-M M85, 4-тактний двигун — чистий бензин АИ-92, масло SAE 30 окремо в картер (не суміш!). ${DIAG_DEFS.cultivator.gc()}\nДай 2-3 причини і що перевірити першим.`},
+};
+
+const DEF_STATE={car:{km:null,lastOilKm:null,oilInterval:8000},tools:{chainsaw:{motoHours:0,lastOilHours:0},brushcutter:{motoHours:12,lastOilHours:0},cultivator:{motoHours:0,lastOilHours:0}},lastCheckin:null,checkinIntervalDays:14};
+let state=JSON.parse(JSON.stringify(DEF_STATE)),history=[],partsCustom={},collapsed={},diagChats={car:[],chainsaw:[],brushcutter:[],cultivator:[]},activeDiag='car',modalCallback=null,editingPart=null;
+
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+
+function loadData(){
+  state=lsGet(SK)||JSON.parse(JSON.stringify(DEF_STATE));
+  history=lsGet(HK)||[];
+  partsCustom=lsGet(PK)||{};
+  collapsed=lsGet(CK)||{};
+  if(!state.car.oilInterval)state.car.oilInterval=8000;
+  render();
+}
+function save(){lsSet(SK,state);lsSet(HK,history.slice(-50));}
+function saveParts(){lsSet(PK,partsCustom);}
+function saveCollapsed(){lsSet(CK,collapsed);}
+function addHistory(text){history.unshift({ts:new Date().toISOString(),text});save();}
+function render(){renderCar();renderTools();renderHistory();renderParts();}
+
+// ---- INTERVAL ----
+function setOilInterval(km){state.car.oilInterval=km;save();addHistory(`Інтервал масла: ${km.toLocaleString()} км`);renderCar();}
+
+// ---- CAR ----
+function renderCar(){
+  const{km,lastOilKm,oilInterval}=state.car;
+  [7000,8000,10000].forEach(v=>{const b=document.getElementById('ibtn-'+v/1000);if(b)b.classList.toggle('active',oilInterval===v);});
+  document.getElementById('car-prog-label').textContent=`Масло · кожні ${oilInterval.toLocaleString('uk-UA')} км`;
+  const dsp=document.getElementById('car-km-display'),lft=document.getElementById('car-km-left'),bdg=document.getElementById('car-badge'),bar=document.getElementById('car-prog-bar'),pct=document.getElementById('car-prog-pct');
+  if(km===null){dsp.textContent='—';lft.textContent='—';bdg.textContent='Введи пробіг';bdg.className='status-badge neutral';return;}
+  dsp.textContent=km.toLocaleString('uk-UA');
+  if(lastOilKm===null){lft.textContent='?';bdg.textContent='Введи дані ТО';bdg.className='status-badge warn';return;}
+  const used=km-lastOilKm,left=oilInterval-used,p=Math.min(100,Math.round(used/oilInterval*100));
+  lft.textContent=Math.max(0,left).toLocaleString('uk-UA');pct.textContent=p+'%';
+  if(p>=100){bar.className='progress-fill fill-due';bdg.textContent='Пора міняти!';bdg.className='status-badge due';}
+  else if(p>=75){bar.className='progress-fill fill-warn';bdg.textContent='Скоро ТО';bdg.className='status-badge warn';}
+  else{bar.className='progress-fill fill-ok';bdg.textContent='OK';bdg.className='status-badge ok';}
+  bar.style.width=p+'%';
+}
+function updateCarKm(){const val=parseInt(document.getElementById('car-km-input').value);if(!val||val<0)return;const old=state.car.km;state.car.km=val;if(state.car.lastOilKm===null)state.car.lastOilKm=val;document.getElementById('car-km-input').value='';addHistory(`Пробіг: ${old?old.toLocaleString()+' → ':''}${val.toLocaleString()} км`);renderCar();}
+
+// ---- TOOLS ----
+function renderTools(){
+  const grid=document.getElementById('tools-grid');
+  grid.innerHTML=TOOLS_DEF.map(def=>{
+    const t=state.tools[def.id],since=t.motoHours-t.lastOilHours,p=Math.min(100,Math.round(since/def.oilEveryHours*100));
+    let bcls,btext,fcls;
+    if(p>=100){bcls='due';btext='Міняй масло!';fcls='fill-due';}else if(p>=75){bcls='warn';btext='Скоро ТО';fcls='fill-warn';}else{bcls='ok';btext='OK';fcls='fill-ok';}
+    const fuelColor=def.engineType==='4t'?'color:var(--text-success)':'color:var(--text-warning)';
+    return`<div class="tool-card"><div class="tool-header"><div><div class="tool-name">${def.icon} ${def.name}</div><div class="tool-model">${def.brand} ${def.model} · ${def.info}</div><div class="tool-model" style="margin-top:3px;${fuelColor}">${def.fuelMix}</div></div><span class="status-badge ${bcls}">${btext}</span></div><div class="tool-stats"><div class="tool-stat"><div class="stat-label">Всього мотогодин</div><div class="stat-val">${t.motoHours.toFixed(1)} <span class="stat-unit">год</span></div></div><div class="tool-stat"><div class="stat-label">З останньої заміни</div><div class="stat-val">${since.toFixed(1)} <span class="stat-unit">/ ${def.oilEveryHours}г</span></div></div></div><div class="progress-row" style="margin-bottom:8px"><div class="progress-track"><div class="progress-fill ${fcls}" style="width:${p}%"></div></div></div><div class="tool-actions"><button class="btn-sm" onclick="openAddHours('${def.id}','${def.name}')">+ Години</button><button class="btn-oil" onclick="markOilDone('${def.id}','${def.name}')">✓ Масло замінив</button></div></div>`;
+  }).join('');
+}
+function openAddHours(toolId,toolName){const t=state.tools[toolId];document.getElementById('modal-title').textContent=`+ Години: ${toolName}`;document.getElementById('modal-note').textContent=`Зараз: ${t.motoHours.toFixed(1)} год`;document.getElementById('modal-input').value='';document.getElementById('modal').style.display='flex';modalCallback=(val)=>{t.motoHours=parseFloat((t.motoHours+val).toFixed(1));addHistory(`${toolName}: +${val}г → ${t.motoHours.toFixed(1)}г`);save();renderTools();};setTimeout(()=>document.getElementById('modal-input').focus(),100);}
+function markOilDone(toolId,toolName){const t=state.tools[toolId];t.lastOilHours=t.motoHours;addHistory(`${toolName}: масло при ${t.motoHours.toFixed(1)}г`);save();renderTools();}
+function confirmModal(){const val=parseFloat(document.getElementById('modal-input').value);if(!val||val<0)return;if(modalCallback)modalCallback(val);closeModalDirect();}
+function closeModal(e){if(e.target===document.getElementById('modal'))closeModalDirect();}
+function closeModalDirect(){document.getElementById('modal').style.display='none';modalCallback=null;}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModalDirect();});
+
+// ---- PARTS ----
+function getPartData(id){const def=PARTS_DEFAULT.flatMap(g=>g.items).find(i=>i.id===id),c=partsCustom[id];return{brand:c?.brand??def.defBrand,article:c?.article??def.defArticle,isCustom:!!c,defBrand:def.defBrand,defArticle:def.defArticle};}
+function toggleGroup(gid){collapsed[gid]=!collapsed[gid];saveCollapsed();const body=document.getElementById('gbody-'+gid),icon=document.getElementById('gicon-'+gid);if(body){if(collapsed[gid]){body.style.maxHeight='0';body.classList.add('collapsed');}else{body.style.maxHeight=body.scrollHeight+'px';body.classList.remove('collapsed');}}if(icon)icon.classList.toggle('open',!collapsed[gid]);}
+function renderParts(){
+  const el=document.getElementById('parts-list');
+  el.innerHTML=PARTS_DEFAULT.map(group=>{
+    const isColl=!!collapsed[group.id],cc=group.items.filter(i=>partsCustom[i.id]).length,badge=cc>0?`${cc} змінено`:`${group.items.length} поз.`;
+    return`<div class="parts-group"><div class="parts-group-header" onclick="toggleGroup('${group.id}')"><div><div class="parts-group-title">${group.group}</div><div class="parts-group-sub">${group.sub}</div></div><div class="parts-group-right"><span class="group-badge">${badge}</span><span class="collapse-icon ${isColl?'':'open'}" id="gicon-${group.id}">▼</span></div></div><div class="group-body${isColl?' collapsed':''}" id="gbody-${group.id}" style="max-height:${isColl?'0':group.items.length*120+'px'}">${group.items.map(item=>{const d=getPartData(item.id),isEd=editingPart===item.id;return`<div class="part-row"><div class="part-main"><div class="part-left"><div class="part-name">${item.name}</div><div class="part-note">${item.note}</div></div><div class="part-right"><div class="part-article${d.isCustom?' custom':''}" onclick="copyArticle(this,'${d.article}')">${d.article}</div><div class="part-brand${d.isCustom?' custom':''}">${d.brand}${d.isCustom?' ✓':''}</div></div></div>${isEd?`<div class="part-edit-row"><input class="part-edit-inp" id="ei-brand-${item.id}" placeholder="Бренд" value="${d.brand}" style="width:90px"><input class="part-edit-inp" id="ei-art-${item.id}" placeholder="Артикул" value="${d.article}"><button class="btn-save-part" onclick="savePart('${item.id}')">Зберегти</button>${d.isCustom?`<button class="btn-reset-part" onclick="resetPart('${item.id}')">↩</button>`:''}<button class="btn-edit" onclick="cancelEdit()">✕</button></div>${d.isCustom?`<div class="default-hint">Дефолт: ${d.defBrand} · ${d.defArticle}</div>`:''}`:`<div style="margin-top:6px"><button class="btn-edit" onclick="startEdit('${item.id}')">змінити</button></div>`}</div>`;}).join('')}</div></div>`;
+  }).join('');
+  PARTS_DEFAULT.forEach(g=>{if(!collapsed[g.id]){const b=document.getElementById('gbody-'+g.id);if(b)setTimeout(()=>{b.style.maxHeight=b.scrollHeight+'px';},10);}});
+}
+function copyArticle(el,text){navigator.clipboard.writeText(text).catch(()=>{});const o=el.textContent,ob=el.style.background,oc=el.style.color;el.textContent='скопійовано ✓';el.style.background='var(--bg-success)';el.style.color='var(--text-success)';setTimeout(()=>{el.textContent=o;el.style.background=ob;el.style.color=oc;},1500);}
+function startEdit(id){editingPart=id;renderParts();setTimeout(()=>{const b=document.getElementById('ei-brand-'+id);if(b)b.focus();},30);}
+function cancelEdit(){editingPart=null;renderParts();}
+function savePart(id){const brand=(document.getElementById('ei-brand-'+id)?.value||'').trim(),article=(document.getElementById('ei-art-'+id)?.value||'').trim(),def=PARTS_DEFAULT.flatMap(g=>g.items).find(i=>i.id===id);if(brand===def.defBrand&&article===def.defArticle){resetPart(id);return;}if(brand||article){partsCustom[id]={brand:brand||def.defBrand,article:article||def.defArticle};}saveParts();editingPart=null;renderParts();}
+function resetPart(id){delete partsCustom[id];saveParts();editingPart=null;renderParts();}
+
+// ---- CHECKIN ----
+function renderCheckin(){
+  const el=document.getElementById('checkin-content'),now=new Date(),last=state.lastCheckin?new Date(state.lastCheckin):null,daysSince=last?Math.floor((now-last)/86400000):999,dueIn=state.checkinIntervalDays-daysSince,questions=buildCIQ();
+  if(dueIn>0&&last){const nd=new Date(last.getTime()+state.checkinIntervalDays*86400000);el.innerHTML=`<div class="checkin-done"><div style="font-size:32px;margin-bottom:12px">✅</div><div style="font-weight:500;font-size:16px;margin-bottom:8px">Check-in пройдено</div><div style="font-size:13px;color:var(--text-muted)">Наступний через ${dueIn} дн.<br>${nd.toLocaleDateString('uk-UA',{day:'numeric',month:'long'})}</div><button style="margin-top:20px;padding:10px 20px;border-radius:var(--radius);border:0.5px solid var(--border-strong);background:none;cursor:pointer;font-size:14px;color:var(--text-secondary);font-family:var(--font-sans)" onclick="forceCheckin()">Зробити зараз</button></div>`;return;}
+  let qi=parseInt(el.dataset.qidx||'0');if(qi>=questions.length)qi=0;showQ(questions,qi,el);
+}
+function buildCIQ(){const qs=[{id:'car_km',text:`🚗 Який зараз пробіг на Skoda Octavia?\n\nВведи число або "ні" якщо не змінився.`,type:'km'}];TOOLS_DEF.forEach(def=>{const t=state.tools[def.id];qs.push({id:`tool_${def.id}`,text:`${def.icon} ${def.name} — скільки годин попрацювала?\n\nЗараз: ${t.motoHours.toFixed(1)}г. Введи додаткові або "0".`,type:'hours',toolId:def.id,toolName:def.name});});return qs;}
+function showQ(questions,idx,el){el.dataset.qidx=idx;if(idx>=questions.length){state.lastCheckin=new Date().toISOString();save();el.innerHTML=`<div class="checkin-done"><div style="font-size:32px;margin-bottom:12px">🎉</div><div style="font-weight:500;font-size:16px">Готово!</div><div style="font-size:13px;color:var(--text-muted);margin-top:8px">Наступний через ${state.checkinIntervalDays} днів</div></div>`;render();return;}const q=questions[idx],qs=JSON.stringify(questions).replace(/"/g,'&quot;');el.innerHTML=`<div class="checkin-card"><div class="checkin-from">Check-in · ${idx+1} / ${questions.length}</div><div class="checkin-bubble">${q.text.replace(/\n/g,'<br>')}</div><input class="checkin-input" id="ci-inp" type="text" inputmode="${q.type==='km'?'numeric':'decimal'}" placeholder="Введи значення..."><div class="checkin-btns"><button class="btn-skip" onclick="ciSkip(${qs},${idx})">Пропустити</button><button class="btn-confirm" onclick="ciConfirm(${qs},${idx},'${q.id}','${q.type}','${q.toolId||''}')">Підтвердити ↗</button></div></div>`;setTimeout(()=>{const i=document.getElementById('ci-inp');if(i)i.focus();},50);}
+function ciSkip(questions,idx){showQ(questions,idx+1,document.getElementById('checkin-content'));}
+function ciConfirm(questions,idx,qId,type,toolId){const val=document.getElementById('ci-inp').value.trim(),el=document.getElementById('checkin-content');if(!val||val.toLowerCase()==='ні'||val==='0'){showQ(questions,idx+1,el);return;}const num=parseFloat(val.replace(/\s/g,'').replace(',','.'));if(isNaN(num)){document.getElementById('ci-inp').style.borderColor='var(--text-danger)';return;}if(type==='km'){const old=state.car.km;state.car.km=num;if(state.car.lastOilKm===null)state.car.lastOilKm=num;addHistory(`Пробіг: ${old?old.toLocaleString()+' → ':''}${num.toLocaleString()} км`);}else if(type==='hours'&&toolId){const t=state.tools[toolId];t.motoHours=parseFloat((t.motoHours+num).toFixed(1));addHistory(`${TOOLS_DEF.find(d=>d.id===toolId).name}: +${num}г → ${t.motoHours.toFixed(1)}г`);}save();renderCar();renderTools();showQ(questions,idx+1,el);}
+function forceCheckin(){state.lastCheckin=null;renderCheckin();}
+
+// ---- DIAG ----
+function switchDiag(id){activeDiag=id;document.querySelectorAll('.diag-stab').forEach((b,i)=>{b.classList.toggle('active',['car','chainsaw','brushcutter','cultivator'][i]===id);});renderDiagCtx();renderDiagMsgs();}
+function renderDiagCtx(){const def=DIAG_DEFS[activeDiag];document.getElementById('diag-context-card').innerHTML=`<strong>${def.label}</strong> · ${def.gc()}`;}
+function renderDiagMsgs(){const msgs=document.getElementById('diag-msgs'),chat=diagChats[activeDiag];if(!chat.length){msgs.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:8px 0">Опиши проблему — відповім з урахуванням стану твоєї техніки.</div>';return;}msgs.innerHTML='';chat.forEach(m=>{const el=document.createElement('div');el.className=`dmsg ${m.role}`;el.innerHTML=`<div class="dbubble">${m.text}</div>`;msgs.appendChild(el);});msgs.scrollTop=msgs.scrollHeight;}
+async function diagSend(){
+  const inp=document.getElementById('diag-input'),text=inp.value.trim();if(!text)return;
+  inp.value='';diagChats[activeDiag].push({role:'user',text});renderDiagMsgs();
+  const msgs=document.getElementById('diag-msgs'),th=document.createElement('div');
+  th.className='dmsg ai';th.innerHTML='<div class="dbubble thinking">Аналізую...</div>';msgs.appendChild(th);msgs.scrollTop=msgs.scrollHeight;
+  const apiMsgs=diagChats[activeDiag].slice(0,-1).map(m=>({role:m.role,content:m.text}));apiMsgs.push({role:'user',content:text});
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:DIAG_DEFS[activeDiag].sp(),messages:apiMsgs})});
+    const data=await resp.json(),reply=data.content?.[0]?.text||'Помилка відповіді';
+    th.querySelector('.dbubble').textContent=reply;th.querySelector('.dbubble').classList.remove('thinking');
+    diagChats[activeDiag].push({role:'assistant',text:reply});if(diagChats[activeDiag].length>30)diagChats[activeDiag]=diagChats[activeDiag].slice(-30);
+  }catch(e){th.querySelector('.dbubble').textContent='Помилка. Перевір API ключ.';th.querySelector('.dbubble').classList.remove('thinking');}
+  msgs.scrollTop=msgs.scrollHeight;
+}
+function diagKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();diagSend();}}
+
+// ---- HISTORY ----
+function renderHistory(){const el=document.getElementById('history-list');if(!history.length){el.innerHTML='<div style="color:var(--text-muted);font-size:13px">Журнал порожній</div>';return;}el.innerHTML=history.slice(0,30).map(h=>{const d=new Date(h.ts),label=d.toLocaleDateString('uk-UA',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('uk-UA',{hour:'2-digit',minute:'2-digit'});return`<div class="hist-item"><span>${h.text}</span><span style="color:var(--text-muted);white-space:nowrap;font-size:11px">${label}</span></div>`;}).join('');}
+
+function switchTab(name){document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['dash','parts','checkin','diag','history'][i]===name);});document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(`tab-${name}`).classList.add('active');if(name==='checkin')renderCheckin();if(name==='diag'){renderDiagCtx();renderDiagMsgs();}}
+
+loadData();
+</script>
+</body>
+</html>
